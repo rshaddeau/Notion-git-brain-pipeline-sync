@@ -1,0 +1,33 @@
+{
+  "name": "notion-git-brain-pipeline-sync",
+  "version": "1.0.0",
+  "description": "Template pipeline for one-way Notion -> git documentation sync: Notion as source of truth, exported to a central brain repo, then distributed to project repos' docs/ folders.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "export": "node scripts/export.js",
+    "distribute": "node scripts/distribute.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rshaddeau/Notion-git-brain-pipeline-sync.git"
+  },
+  "keywords": [
+    "notion",
+    "github-actions",
+    "documentation",
+    "sync"
+  ],
+  "author": "Rod Shaddeau",
+  "license": "MIT",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/rshaddeau/Notion-git-brain-pipeline-sync/issues"
+  },
+  "homepage": "https://github.com/rshaddeau/Notion-git-brain-pipeline-sync#readme",
+  "dependencies": {
+    "@notionhq/client": "^5.25.2",
+    "dotenv": "^17.4.2",
+    "notion-to-md": "^3.1.9"
+  }
+}

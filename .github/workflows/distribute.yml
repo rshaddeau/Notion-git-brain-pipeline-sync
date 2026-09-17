@@ -1,0 +1,49 @@
+name: Distribute docs to project repos
+
+# The push trigger below is a backstop for pushes that DON'T come from
+# export.yml's own GITHUB_TOKEN-authored commit (e.g. a manual commit to
+# content/ by a human). It will NOT fire from export.yml's automated commit
+# - see the comment on export.yml's "Trigger distribution" step for why -
+# so export.yml explicitly dispatches this workflow instead of relying on
+# this trigger alone.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "content/**"
+  workflow_dispatch:
+    inputs:
+      only_repo:
+        description: 'Restrict this run to one repo (e.g. your-org/repo-1). Leave blank to process all mapped repos.'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  distribute:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run distribution
+        env:
+          # Fine-grained PAT scoped only to the repos listed in
+          # config/repo-map.json. Needs Contents Read/write (to push commits
+          # / open branches) and Pull requests Read/write (to open PRs on
+          # PR-mode repos). See scripts/distribute.js for the full rationale
+          # and README.md's Prerequisites section for how to create it.
+          DOCS_SYNC_PAT: ${{ secrets.DOCS_SYNC_PAT }}
+          ONLY_REPO: ${{ github.event.inputs.only_repo }}
+        run: npm run distribute
